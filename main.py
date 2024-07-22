@@ -162,6 +162,5 @@ def main():
 if __name__ == '__main__':
     if input('Fazer teste na carteira 65? (s/n): ') in ['sim', 's', 'yes', 'y']:
         iniciar_busca(teste=True)
-        aguarda_quebra(20)
     else:
         main()
