@@ -14,7 +14,7 @@ def selecionar_range():
     parte = int(input('Digite uma parte a ser procurada entre 1 e 50_000_000 (cinquenta milhoes), ou 0 para uma parte aleatória: '))
     if parte == 0:
         parte = random.randint(1,50000000)
-        print(f'Anote a parte gerada aleatória: {parte}')
+        print(f'----------------------------\nAnote a parte gerada aleatória: {parte}\n----------------------------')
     public_key = '03633cbe3ec02b9401c5effa144c5b4d22f87940259634858fc7e59b1c09937852'
     start = int('200000000000000000000000000000000', 16)
     end = int('3ffffffffffffffffffffffffffffffff', 16)
@@ -42,7 +42,7 @@ def iniciar_busca(teste:bool):
     print(comando)
     try: 
         print("Iniciando busca")
-        subprocess.Popen(comando, shell=False)
+        subprocess.Popen(comando, shell=True)
     except Exception as e:
         print(f'Erro: {e}')
 
@@ -101,7 +101,7 @@ def aguarda_quebra(): #Apos chamar o quebrar chave, fica procurando a key no arq
     time.sleep(1)
     contador = 0
     while True:
-        sys.stdout.write(f"\rEsperando Quebra da Chave... {contador} segundos\n")
+        sys.stdout.write(f"\r\nChave não encontrada... {contador} segundos\n")
         sys.stdout.flush()
         if os.path.exists(kfound):
             with open(kfound, "r") as file:
@@ -115,8 +115,8 @@ def aguarda_quebra(): #Apos chamar o quebrar chave, fica procurando a key no arq
                     print (f"Chave Privada Salva no seu Drive: {privkey}")
                     print (f"CHAVE WIF = {wif}")
                     return wif
-        time.sleep(5)
-        contador += 5
+        time.sleep(10)
+        contador += 10
     
 def converter_wif(private_key_hex: str) -> str:
     private_key_hex.lower()
