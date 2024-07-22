@@ -18,7 +18,7 @@ def selecionar_range():
     public_key = '03633cbe3ec02b9401c5effa144c5b4d22f87940259634858fc7e59b1c09937852'
     start = int('200000000000000000000000000000000', 16)
     end = int('3ffffffffffffffffffffffffffffffff', 16)
-    partes = 5000000
+    partes = 50000000
     range_total = end - start + 1
     fracao_range = range_total // partes
 
