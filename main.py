@@ -7,6 +7,10 @@ import os
 import re
 import hashlib
 import base58
+from google.colab import drive
+
+drive.mount('/content/drive')
+privkey_path = '/content/drive/My Drive/Private Key - Puzzle 130.txt'
 
 def selecionar_range():
     parte = int(input('Digite uma parte a ser procurada entre 1 e 5_000_000 (cinco milhoes), ou 0 para uma parte aleatória: '))
@@ -104,6 +108,9 @@ def aguarda_quebra(segundos: int): #Apos chamar o quebrar chave, fica procurando
                 content = file.read()
                 match = re.search(r'Priv: (\w+)', content)
                 if match:
+                    privkey = match.group(1)
+                    with open (privkey_path, 'w') as file:
+                        file.write(privkey)
                     return match.group(1)
         time.sleep(1)
 
