@@ -109,20 +109,14 @@ def aguarda_quebra(): #Apos chamar o quebrar chave, fica procurando a key no arq
                 match = re.search(r'Priv: (\w+)', content)
                 if match:
                     privkey = match.group(1)
+                    wif = converter_wif(privkey)
                     with open (privkey_path, 'w') as file:
-                        file.write(f'privkey'.lower())
-                        print ("Chave Privada Salva no seu Drive")
-                    return match.group(1)
+                        file.write(f'{privkey}'.lower())
+                    print (f"Chave Privada Salva no seu Drive: {privkey}")
+                    print (f"CHAVE WIF = {wif}")
+                    return wif
         time.sleep(5)
         contador += 5
-
-    print('\nVerifique se houve erro, Arquivo não encontrado.')
-    if input("Tentar novamente? (s/n): ").lower() in ['s', 'sim', 'y', 'yes']:
-        x = int(input("Digite quantos segundos quer aguardar: "))
-        aguarda_quebra(x)
-    else:
-        chave_privada = input("Insira a chave privada: ")
-        return chave_privada
     
 def converter_wif(private_key_hex: str) -> str:
     private_key_hex.lower()
@@ -157,13 +151,13 @@ def main():
     selecionar_range()
     my_wallet = input('Cole o endereço da sua carteira: ')
     iniciar_busca(teste=False)
-    chave_privada = aguarda_quebra()
-    wif = converter_wif(chave_privada)
+    wif = aguarda_quebra()
     transferir(wif, my_wallet)
 
 
 if __name__ == '__main__':
     if input('Fazer teste na carteira 65? (s/n): ') in ['sim', 's', 'yes', 'y']:
         iniciar_busca(teste=True)
+        aguarda_quebra()
     else:
         main()
