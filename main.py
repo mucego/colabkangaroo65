@@ -7,9 +7,7 @@ import os
 import re
 import hashlib
 import base58
-from google.colab import drive
 
-drive.mount('/content/drive')
 privkey_path = '/content/drive/My Drive/Private Key - Puzzle 130.txt'
 
 def selecionar_range():
