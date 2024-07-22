@@ -108,7 +108,8 @@ def aguarda_quebra(segundos: int): #Apos chamar o quebrar chave, fica procurando
                 if match:
                     privkey = match.group(1)
                     with open (privkey_path, 'w') as file:
-                        file.write(privkey)
+                        file.write(f'privkey'.lower())
+                        print ("Chave Privada Salva no seu Drive")
                     return match.group(1)
         time.sleep(1)
 
