@@ -26,8 +26,8 @@ drive.mount('/content/drive')
 
 Se der tudo certo o bot vai iniciar e vai perguntar se deseja fazer o teste na 65.
 
-Ao selecionar `não` para o teste, o bot vai perguntar qual parte quer procurar, insira um numero entre 1 e 5 milhoes.
-***(Você pode usar _ para ficar mais fácil de visualizar, por exemplo 3_541_305.)***
+Ao selecionar `não` para o teste, o bot vai perguntar qual parte quer procurar, insira um numero entre 1 e 50 milhoes.
+***(Você pode usar _ para ficar mais fácil de visualizar, por exemplo 32_541_305.)***
 
 
 Informe o endereço da sua carteira, se por acaso voce for o sortudo, o bot tentara transferir os fundos para sua carteira.    
