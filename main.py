@@ -41,8 +41,8 @@ def iniciar_busca(teste:bool):
     comando = f"{path} {argumentos}"
     print(comando)
     try: 
-        subprocess.Popen(comando, shell=True)
-        print("Iniciado busca")
+        print("Iniciando busca")
+        subprocess.Popen(comando, shell=False)
     except Exception as e:
         print(f'Erro: {e}')
 
