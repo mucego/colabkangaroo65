@@ -33,13 +33,13 @@ def selecionar_range():
 
 def iniciar_busca(teste:bool):
     path = './kangaroo'
-    argumentos = ['-gpu', '-t 1', '-o KFound.txt', '130.txt']
+    argumentos = '-gpu -t 1 -o KFound.txt 130.txt'
     if teste == True:
-        argumentos = ['-gpu', '-t 1', '-o KFound.txt', '65.txt']
-    comando = [path] + argumentos
+        argumentos = '-gpu -t 1 -o KFound.txt 65.txt'
+    comando = f"{path} {argumentos}"
     print(comando)
     try: 
-        subprocess.run(comando, check=True)
+        subprocess.run(comando, shell=True, check=True)
         print("Iniciado busca")
     except Exception as e:
         print(f'Erro: {e}')
