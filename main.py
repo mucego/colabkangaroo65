@@ -98,7 +98,7 @@ def verifica_saldo():
 def aguarda_quebra(): #Apos chamar o quebrar chave, fica procurando a key no arquivo KFound.txt na raiz
     kfound = 'KFound.txt'
     print('---------------------------------------------')
-    time.sleep(1)
+    time.sleep(20)
     contador = 0
     while True:
         sys.stdout.write(f"\r\nChave não encontrada... {contador} segundos\n")
