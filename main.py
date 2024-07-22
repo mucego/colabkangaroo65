@@ -11,14 +11,14 @@ import base58
 privkey_path = '/content/drive/My Drive/Private Key - Puzzle 130.txt'
 
 def selecionar_range():
-    parte = int(input('Digite uma parte a ser procurada entre 1 e 50_000_000 (cinquenta milhoes), ou 0 para uma parte aleatória: '))
-    if parte == 0:
-        parte = random.randint(1,50000000)
-        print(f'----------------------------\nAnote a parte gerada aleatória: {parte}\n----------------------------')
     public_key = '03633cbe3ec02b9401c5effa144c5b4d22f87940259634858fc7e59b1c09937852'
     start = int('200000000000000000000000000000000', 16)
     end = int('3ffffffffffffffffffffffffffffffff', 16)
-    partes = 50000000
+    partes = 33554432
+    parte = int(input(f'Digite uma parte a ser procurada entre 1 e {partes}, ou 0 para uma parte aleatória: '))
+    if parte == 0:
+        parte = random.randint(1,partes)
+        print(f'----------------------------\nAnote a parte gerada aleatória: {parte}\n----------------------------')
     range_total = end - start + 1
     fracao_range = range_total // partes
 
