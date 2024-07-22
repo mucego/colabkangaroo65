@@ -47,15 +47,17 @@ def iniciar_busca(teste:bool):
         print(f'Erro: {e}')
 
 def transferir(wif, destino):
-
-    my_key = PrivateKey(wif)
-    print('---------------------------------------------------\nEndereço da Carteira Capturada: ', my_key.address, '\n---------------------------------------------------')
-    saldo = my_key.balance_as('satoshi')
-    print('---------------------------------------------------\nSaldo da Carteira Capturada: ', saldo, 'satoshis', '\n---------------------------------------------------')
-    if destino == 'Não Informado':
-        print('\nTransferencia não informada, endereço não informado.\n')
-        return None
-    taxa = network.get_fee('fast') 
+    try: 
+        my_key = PrivateKey(wif)
+        print('---------------------------------------------------\nEndereço da Carteira Capturada: ', my_key.address, '\n---------------------------------------------------')
+        saldo = my_key.balance_as('satoshi')
+        print('---------------------------------------------------\nSaldo da Carteira Capturada: ', saldo, 'satoshis', '\n---------------------------------------------------')
+        if destino == 'Não Informado':
+            print('\nTransferencia não informada, endereço não informado.\n')
+            return None
+        taxa = network.get_fee('fast') 
+    except Exception as e:
+        print(f'Erro ao verificar a carteira: {e}')
     print(f'Taxa de Transação Sugerida (satoshis por byte): {taxa}')
     taxa *= 2
     taxa = int(taxa) * 250
@@ -82,18 +84,21 @@ def transferir(wif, destino):
 def verifica_saldo():
     endereco = '1Fo65aKq8s8iquMt6weF1rku1moWVEd5Ua'
     print('Verificando saldo da carteira 130, aguarde...')
-    saldo = network.NetworkAPI.get_balance(endereco) / 1e8
+    try:
+        saldo = network.NetworkAPI.get_balance(endereco) / 1e8
 
-    if saldo > 0:
-        print(f"\n------------------------------ \nCarteira: {endereco}: \nSaldo: {saldo:.8f} BTC\n------------------------------")
-        return
-
-    else:
-        if input("Carteira está sem saldo, o que indica que já foi encontrada, deseja continuar? (s/n): ") in ['sim','s','y','yes']:
+        if saldo > 0:
+            print(f"\n------------------------------ \nCarteira: {endereco}: \nSaldo: {saldo:.8f} BTC\n------------------------------")
             return
+
         else:
-            print('Encerrando Bot')
-            quit()
+            if input("Carteira está sem saldo, o que indica que já foi encontrada, deseja continuar? (s/n): ") in ['sim','s','y','yes']:
+                return
+            else:
+                print('Encerrando Bot')
+                quit()
+    except Exception as e:
+        print(f"Houve um erro ao verificar o saldo: {e}")
 
 def aguarda_quebra(): #Apos chamar o quebrar chave, fica procurando a key no arquivo KFound.txt na raiz
     kfound = 'KFound.txt'
@@ -108,48 +113,54 @@ def aguarda_quebra(): #Apos chamar o quebrar chave, fica procurando a key no arq
                 content = file.read()
                 match = re.search(r'Priv: (\w+)', content)
                 if match:
-                    privkey = match.group(1)
-                    wif = converter_wif(privkey)
-                    with open (privkey_path, 'w') as file:
-                        file.write(f'{privkey}'.lower())
-                    print (f"Chave Privada Salva no seu Drive: {privkey}")
-                    print (f"CHAVE WIF = {wif}")
-                    return wif
+                    try:
+                        privkey = match.group(1)
+                        wif = converter_wif(privkey)
+                        with open (privkey_path, 'w') as file:
+                            file.write(f'{privkey}'.lower())
+                        print (f"Chave Privada Salva no seu Drive: {privkey}")
+                        print (f"CHAVE WIF = {wif}")
+                        return wif
+                    except Exception as e:
+                        print (f'Erro ao retornar a chave: {e}')
         time.sleep(10)
         contador += 10
     
 def converter_wif(private_key_hex: str) -> str:
-    private_key_hex.lower()
-    # Remove o prefixo 0x se ele estiver presente
-    if private_key_hex.startswith('0x'):
-        private_key_hex = private_key_hex[2:]
+    try: 
+        private_key_hex.lower()
+        # Remove o prefixo 0x se ele estiver presente
+        if private_key_hex.startswith('0x'):
+            private_key_hex = private_key_hex[2:]
 
-    private_key_hex = private_key_hex.zfill(64)
+        private_key_hex = private_key_hex.zfill(64)
 
-    # Adiciona o prefixo 0x80 para a mainnet
-    prefix = b'\x80'
-    private_key_bytes = bytes.fromhex(private_key_hex)
-    # Adiciona o sufixo 0x01 para indicar que é uma chave comprimida
-    compressed_suffix = b'\x01'
-    extended_key = prefix + private_key_bytes + compressed_suffix
-    
-    # Realiza o SHA-256 duplo do extended_key
-    first_sha256 = hashlib.sha256(extended_key).digest()
-    second_sha256 = hashlib.sha256(first_sha256).digest()
-    
-    # Adiciona os 4 primeiros bytes do segundo SHA-256 ao final do extended_key
-    checksum = second_sha256[:4]
-    final_key = extended_key + checksum
-    
-    # Converte para base58
-    wif_compressed = base58.b58encode(final_key)
-    
-    return wif_compressed.decode('utf-8')
+        # Adiciona o prefixo 0x80 para a mainnet
+        prefix = b'\x80'
+        private_key_bytes = bytes.fromhex(private_key_hex)
+        # Adiciona o sufixo 0x01 para indicar que é uma chave comprimida
+        compressed_suffix = b'\x01'
+        extended_key = prefix + private_key_bytes + compressed_suffix
+        
+        # Realiza o SHA-256 duplo do extended_key
+        first_sha256 = hashlib.sha256(extended_key).digest()
+        second_sha256 = hashlib.sha256(first_sha256).digest()
+        
+        # Adiciona os 4 primeiros bytes do segundo SHA-256 ao final do extended_key
+        checksum = second_sha256[:4]
+        final_key = extended_key + checksum
+        
+        # Converte para base58
+        wif_compressed = base58.b58encode(final_key)
+        
+        return wif_compressed.decode('utf-8')
+    except Exception as e:
+        print('Ocorreu um erro ao converter a chave privada para WIF: {e}')
 
 def main():
     verifica_saldo()    
     selecionar_range()
-    my_wallet = input('Cole o endereço da sua carteira: ')
+    my_wallet = input('Se encontrar a chave o bot tentara realizar a transfernecia para a sua carteira\nCole o endereço da sua carteira: ')
     iniciar_busca(teste=False)
     wif = aguarda_quebra()
     transferir(wif, my_wallet)
