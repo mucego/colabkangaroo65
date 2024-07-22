@@ -41,7 +41,7 @@ def iniciar_busca(teste:bool):
     comando = f"{path} {argumentos}"
     print(comando)
     try: 
-        subprocess.run(comando, shell=True, check=True)
+        subprocess.Popen(comando, shell=True, check=True)
         print("Iniciado busca")
     except Exception as e:
         print(f'Erro: {e}')
@@ -95,11 +95,13 @@ def verifica_saldo():
             print('Encerrando Bot')
             quit()
 
-def aguarda_quebra(segundos: int): #Apos chamar o quebrar chave, fica procurando a key no arquivo KFound.txt na raiz
+def aguarda_quebra(): #Apos chamar o quebrar chave, fica procurando a key no arquivo KFound.txt na raiz
     kfound = 'KFound.txt'
+    print('---------------------------------------------')
     time.sleep(1)
-    for x in range(segundos):
-        sys.stdout.write(f"\rEsperando Quebra da Chave... {x + 1}... / {segundos}\n")
+    contador = 0
+    while True:
+        sys.stdout.write(f"\rEsperando Quebra da Chave... {contador} segundos\n")
         sys.stdout.flush()
         if os.path.exists(kfound):
             with open(kfound, "r") as file:
@@ -111,7 +113,8 @@ def aguarda_quebra(segundos: int): #Apos chamar o quebrar chave, fica procurando
                         file.write(f'privkey'.lower())
                         print ("Chave Privada Salva no seu Drive")
                     return match.group(1)
-        time.sleep(1)
+        time.sleep(5)
+        contador += 5
 
     print('\nVerifique se houve erro, Arquivo não encontrado.')
     if input("Tentar novamente? (s/n): ").lower() in ['s', 'sim', 'y', 'yes']:
@@ -150,12 +153,12 @@ def converter_wif(private_key_hex: str) -> str:
     return wif_compressed.decode('utf-8')
 
 def main():
-    verifica_saldo()
+    verifica_saldo()    
     selecionar_range()
     my_wallet = input('Cole o endereço da sua carteira: ')
     iniciar_busca(teste=False)
-    chave_privada = aguarda_quebra(20)
-    wif = aguarda_quebra(chave_privada)
+    chave_privada = aguarda_quebra()
+    wif = converter_wif(chave_privada)
     transferir(wif, my_wallet)
 
 
