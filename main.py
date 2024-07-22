@@ -33,9 +33,9 @@ def selecionar_range():
 
 def iniciar_busca(teste:bool):
     path = './kangaroo'
-    argumentos = ['-gpu', '-t 0', '-o KFound.txt', '130.txt']
+    argumentos = ['-gpu', '-t 1', '-o KFound.txt', '130.txt']
     if teste == True:
-        argumentos = ['-gpu', '-t 0', '-o KFound.txt', '65.txt']
+        argumentos = ['-gpu', '-t 1', '-o KFound.txt', '65.txt']
     comando = [path] + argumentos
     print(comando)
     try: 
