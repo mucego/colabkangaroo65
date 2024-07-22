@@ -116,8 +116,11 @@ def aguarda_quebra(): #Apos chamar o quebrar chave, fica procurando a key no arq
                     try:
                         privkey = match.group(1)
                         wif = converter_wif(privkey)
-                        with open (privkey_path, 'w') as file:
-                            file.write(f'{privkey}'.lower())
+                        try: 
+                            with open (privkey_path, 'w') as file:
+                                file.write(f'{wif}'.lower())
+                        except Exception as e:
+                            print(f'------------\nNão foi possivel salvar o arquivo com a chave WIF. WIF: {wif}\n-------------')
                         print (f"Chave Privada Salva no seu Drive: {privkey}")
                         print (f"CHAVE WIF = {wif}")
                         return wif
