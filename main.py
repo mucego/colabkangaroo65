@@ -182,7 +182,7 @@ def converter_wif(private_key_hex: str) -> str:
 def busca_completa_com_save():
     path = './kangaroo'
     if os.path.exists('save.work'):
-        argumentos = '-gpu -g 80,128 -t 0 -ws -w save.work -wi 60 -o KFound.txt save.work'
+        argumentos = '-gpu -g 80,128 -t 0 -ws -w save.work -wi 60 -o KFound.txt -i save.work'
     else:
         argumentos = '-gpu -g 80,128 -t 0 -ws -w save.work -wi 60 -o KFound.txt all.txt'
 
