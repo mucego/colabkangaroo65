@@ -114,8 +114,8 @@ def work_save():
     global contador
     contador +=1
     try: 
-        if contador == 1:
-        #Se existir work e existir o save_path, copia pro drive a cada 10 minutos
+        if contador == 5:
+        #Se existir work e existir o save_path, copia pro drive a cada (contador) minutos
             if os.path.exists('save.work'):
                 if drive_is_mounted:
                     shutil.copy('save.work', save_path)
@@ -126,7 +126,7 @@ def work_save():
     except Exception as e:
         print(f"Não foi possível salvar o work no seu drive, verifique se está montado corretamente.\n {e}")
 
-def aguarda_quebra(): #Apos chamar o quebrar chave, fica procurando a key no arquivo KFound.txt na raiz
+def aguarda_quebra(): #Apos chamar o quebrar chave, fica procurando a key no arquivo KFound.txt na raiz a cada minuto
     kfound = 'KFound.txt'
     print('---------------------------------------------')
     time.sleep(80)
