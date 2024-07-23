@@ -10,7 +10,7 @@ import base58
 import argparse
 import shutil
 
-save_path = '/content/drive/My Drive/save.work'
+save_path = '/content/drive/MyDrive/save.work'
 contador = 0
 def selecionar_range():
     public_key = '03633cbe3ec02b9401c5effa144c5b4d22f87940259634858fc7e59b1c09937852'
@@ -111,15 +111,19 @@ def work_restore():
 def work_save():
     global contador
     contador +=1
-    if contador == 10:
-    #Se existir work e existir o save_path, copia pro drive a cada 10 minutos
-        if os.path.exists('save.work'):
-            if os.path.exists(save_path):
-                shutil.copy('save.work', save_path)
-                print("Work Salvo no Drive")
-            else:
-                print("Não foi possível salvar o work no seu drive, verifique se está montado corretamente.")
-            contador = 0
+    try: 
+        if contador == 1:
+        #Se existir work e existir o save_path, copia pro drive a cada 10 minutos
+            if os.path.exists('save.work'):
+                if os.path.exists(save_path):
+                    shutil.copy('save.work', save_path)
+                    print("Work Salvo no Drive")
+                else:
+                    print("Não foi possível salvar o work no seu drive, verifique se está montado corretamente.")
+                contador = 0
+    except Exception as e:
+        print(f"Não foi possível salvar o work no seu drive, verifique se está montado corretamente.\n {e}")
+
 
 def aguarda_quebra(): #Apos chamar o quebrar chave, fica procurando a key no arquivo KFound.txt na raiz
     kfound = 'KFound.txt'
