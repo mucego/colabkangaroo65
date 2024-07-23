@@ -35,9 +35,9 @@ def selecionar_range():
 
 def iniciar_busca(teste:bool):
     path = './kangaroo'
-    argumentos = '-gpu -t 1 -o KFound.txt 130.txt'
+    argumentos = '-gpu -g 80,128 -t 1 -o KFound.txt 130.txt'
     if teste == True:
-        argumentos = '-gpu -t 1 -o KFound.txt 65.txt'
+        argumentos = '-gpu -g 80,128 -t 1 -o KFound.txt 65.txt'
     comando = f"{path} {argumentos}"
     print(comando)
     try: 
@@ -160,14 +160,33 @@ def converter_wif(private_key_hex: str) -> str:
     except Exception as e:
         print('Ocorreu um erro ao converter a chave privada para WIF: {e}')
 
+def busca_completa_com_save():
+    path = './kangaroo'
+    if os.path.exists('save.work'):
+        argumentos = '-gpu -g 80,128 -t 0 -ws -w save.work -wi 60 -o KFound.txt all.txt'
+    else:
+        argumentos = '-gpu -g 80,127 -t 0 -ws -w save.work -wi 60 -o KFound.txt save.work'
+    comando = f"{path} {argumentos}"
+    print(comando)
+    try: 
+        print("Iniciando busca")
+        subprocess.Popen(comando, shell=True)
+    except Exception as e:
+        print(f'Erro: {e}')
+
 def main():
-    verifica_saldo()    
-    selecionar_range()
+    verifica_saldo()
     my_wallet = input('Se encontrar a chave o bot tentara realizar a transfernecia para a sua carteira\nCole o endereço da sua carteira: ')
-    iniciar_busca(teste=False)
+    selecionar = input('\n-------\n1 - Selecionar um número entre 1 e 50 milhoes.\n2 - Fazer a busca em todo o range da carteira 130 com save automático.\n-------Selecione uma opção: ')
+    if selecionar == '1':
+        selecionar_range()
+        iniciar_busca(teste=False)
+    elif selecionar == '2':
+        busca_completa_com_save()
+    else:
+        print('Opção Inválida, encerrando.')
     wif = aguarda_quebra()
     transferir(wif, my_wallet)
-
 
 if __name__ == '__main__':
     if input('Fazer teste na carteira 65? (s/n): ') in ['sim', 's', 'yes', 'y']:
