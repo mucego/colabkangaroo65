@@ -7,6 +7,7 @@ Bot criado para automatizar o processo do desafio da carteira 130 usando Colab `
 * Acesse o site do Colab: https://colab.research.google.com
 * Crie um novo notebook
 * Clique em Ambiente de Execução
+* Alterar Ambiente de Execução
 * Marque a opção `T4 GPU` e salve.
 
 Copie e cole os comandos abaixo:
