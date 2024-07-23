@@ -8,8 +8,9 @@ import re
 import hashlib
 import base58
 import argparse
+import shutil
 
-privkey_path = '/content/drive/My Drive/Private Key - Puzzle 130.txt'
+save_path = '/content/drive/My Drive/save.work'
 
 def selecionar_range():
     public_key = '03633cbe3ec02b9401c5effa144c5b4d22f87940259634858fc7e59b1c09937852'
@@ -99,14 +100,29 @@ def verifica_saldo():
     except Exception as e:
         print(f"Houve um erro ao verificar o saldo: {e}")
 
+def work_restore():
+    # Se existir work salvo, copia para a pasta do colabkangaroo
+    if os.path.exists(save_path):
+        shutil.copy(save_path, 'save.work')
+        print("Work Save Recuperado.")
+    else:
+        print("Work Save Não Localizado.")
+
+def work_save():
+    #Se existir work e existir o save_path, copia pro drive
+    if os.path.exists('save.work'):
+        if os.path.exists(save_path):
+            shutil.copy('save.work', save_path)
+            print("Work Salvo no Drive")
+        else:
+            print("Não foi possível salvar o work no seu drive, verifique se está montado corretamente.")
+
 def aguarda_quebra(): #Apos chamar o quebrar chave, fica procurando a key no arquivo KFound.txt na raiz
     kfound = 'KFound.txt'
     print('---------------------------------------------')
     time.sleep(20)
     contador = 0
     while True:
-        sys.stdout.write(f"\r\nChave não encontrada... {contador} segundos\n")
-        sys.stdout.flush()
         if os.path.exists(kfound):
             with open(kfound, "r") as file:
                 content = file.read()
@@ -115,18 +131,14 @@ def aguarda_quebra(): #Apos chamar o quebrar chave, fica procurando a key no arq
                     try:
                         privkey = match.group(1)
                         wif = converter_wif(privkey)
-                        try: 
-                            with open (privkey_path, 'w') as file:
-                                file.write(f'{wif}'.lower())
-                        except Exception as e:
-                            print(f'------------\nNão foi possivel salvar o arquivo com a chave WIF. WIF: {wif}\n-------------')
-                        print (f"Chave Privada Salva no seu Drive: {privkey}")
                         print (f"CHAVE WIF = {wif}")
                         return wif
                     except Exception as e:
                         print (f'Erro ao retornar a chave: {e}')
-        time.sleep(10)
-        contador += 10
+
+        time.sleep(30)
+        contador += 30
+        work_save()
     
 def converter_wif(private_key_hex: str) -> str:
     try: 
@@ -184,7 +196,7 @@ def main():
             "Exemplo de uso: !python main.py -m 2 -d bc1qych3lyjyg3cse6tjw7m997ne83fyye4des99a9"
         ),
         formatter_class=argparse.RawTextHelpFormatter
-    )
+    )   
     parser.add_argument('-d', '--destination', type=str, required=False, help="Informe sua Carteira para transferir automaticamente se encontrada a chave privada.")
     parser.add_argument('-m', '--mode', type=str, choices=['1','2'], required=False, help="Informe o modo (1 ou 2)")
     args = parser.parse_args()
@@ -200,6 +212,7 @@ def main():
         selecionar_range()
         iniciar_busca()
     elif selecionar == '2':
+        work_restore()
         busca_completa_com_save()
     else:
         print('Opção Inválida, encerrando.')

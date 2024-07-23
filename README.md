@@ -18,12 +18,15 @@ Copie e cole os comandos abaixo:
 !pip install -r requirements.txt
 !python main.py
 ```
+Para uso do modo 2 e manter os dados, é necessário montar o drive da conta google. Acrescente as seguintes linhas antes de `python main.py`.
 
-Uma vez criado a conta e o notebook, da proxima vez que for usar basta navegar até o diretório e iniciar o bot.
+**Observação**: Se não montar o drive, não será possível salvar o progresso.
 ```
-%cd colabkangaroo
-!python main.py
+from google.colab import drive
+drive.mount('/content/drive')
 ```
+
+
 Ao iniciar o bot vai ser solicitado 2 informações, sua carteira e o modo.
 * Informe sua carteira para transferir o saldo se encontrada a chave ou deixe em branco para transferir manualmente.
 
@@ -32,7 +35,9 @@ Ao iniciar o bot vai ser solicitado 2 informações, sua carteira e o modo.
 * **Modo 2**: O range total é informado para o Kangaroo, e será gerado arquivos work com salvamento do progresso, esse modo é indicado se deseja fazer multiplas contas google e unir os works, para isso leia o readme do repositorio do Kangaroo.
 
 
-Voce tambem pode passar o modo e o endereço da sua carteira via argumento. Por exemplo `!python main.py -m 2 -d bc1qych3lyjyg3cse6tjw7m997ne83fyye4des99a9`
+Voce tambem pode passar o modo e o endereço da sua carteira via argumento. 
+
+Por exemplo `!python main.py -m 2 -d bc1qych3lyjyg3cse6tjw7m997ne83fyye4des99a9`
    
 
 ## Observações Importantes
