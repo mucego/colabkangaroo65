@@ -2,7 +2,7 @@
 
 Bot criado para automatizar o processo do desafio da carteira 130 usando Colab `GRATUITAMENTE`
 
-# Como Usar? 
+## Como Usar? 
 * Crie uma conta do Google se não tiver ainda.
 * Acesse o site do Colab: https://colab.research.google.com
 * Crie um novo notebook
@@ -36,6 +36,21 @@ Ao selecionar `não` para o teste, o bot vai perguntar qual parte quer procurar,
    
 Informe o endereço da sua carteira, se por acaso voce for o sortudo, o bot tentara transferir os fundos para sua carteira. 
 
+## Observações Importantes
+
+O Kangaroo do JeanLucPons já está devidamente compilado para usar no Colab, fique a vontade para compilar novamente por conta própria caso deseje. https://github.com/JeanLucPons/Kangaroo
+
+* Comandos usados para compilar:
+```
+makefile_path = 'Makefile'
+with open(makefile_path, 'r') as file:
+    makefile_content = file.read()
+    makefile_content = makefile_content.replace('/usr/local/cuda-8.0', '/usr/local/cuda-12.2')
+    makefile_content = makefile_content.replace('/usr/bin/g++-4.8', '/usr/bin/g++')
+with open(makefile_path, 'w') as file:
+    file.write(makefile_content)
+!make gpu=1 ccap=75 all
+```
 ## Doações 
 
 Agora se voce conseguir encontrar usando esse bot, o papai aceita um café: `bc1qych3lyjyg3cse6tjw7m997ne83fyye4des99a9`
