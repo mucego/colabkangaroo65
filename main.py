@@ -11,7 +11,7 @@ import argparse
 import shutil
 
 save_path = '/content/drive/My Drive/save.work'
-
+contador = 0
 def selecionar_range():
     public_key = '03633cbe3ec02b9401c5effa144c5b4d22f87940259634858fc7e59b1c09937852'
     start = int('200000000000000000000000000000000', 16)
@@ -109,18 +109,22 @@ def work_restore():
         print("Work Save Não Localizado.")
 
 def work_save():
-    #Se existir work e existir o save_path, copia pro drive
-    if os.path.exists('save.work'):
-        if os.path.exists(save_path):
-            shutil.copy('save.work', save_path)
-            print("Work Salvo no Drive")
-        else:
-            print("Não foi possível salvar o work no seu drive, verifique se está montado corretamente.")
+    global contador
+    contador +=1
+    if contador == 10:
+    #Se existir work e existir o save_path, copia pro drive a cada 10 minutos
+        if os.path.exists('save.work'):
+            if os.path.exists(save_path):
+                shutil.copy('save.work', save_path)
+                print("Work Salvo no Drive")
+            else:
+                print("Não foi possível salvar o work no seu drive, verifique se está montado corretamente.")
+            contador = 0
 
 def aguarda_quebra(): #Apos chamar o quebrar chave, fica procurando a key no arquivo KFound.txt na raiz
     kfound = 'KFound.txt'
     print('---------------------------------------------')
-    time.sleep(20)
+    time.sleep(80)
     contador = 0
     while True:
         if os.path.exists(kfound):
@@ -136,8 +140,8 @@ def aguarda_quebra(): #Apos chamar o quebrar chave, fica procurando a key no arq
                     except Exception as e:
                         print (f'Erro ao retornar a chave: {e}')
 
-        time.sleep(30)
-        contador += 30
+        time.sleep(60)
+        contador += 60
         work_save()
     
 def converter_wif(private_key_hex: str) -> str:
