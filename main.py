@@ -37,7 +37,7 @@ def iniciar_busca(teste:bool):
     path = './kangaroo'
     argumentos = '-gpu -g 80,128 -t 1 -o KFound.txt 130.txt'
     if teste == True:
-        argumentos = '-gpu -g 80,128 -t 1 -o KFound.txt 65.txt'
+        argumentos = '-gpu -g 80,128 -t 1 65.txt'
     comando = f"{path} {argumentos}"
     print(comando)
     try: 
@@ -163,7 +163,7 @@ def converter_wif(private_key_hex: str) -> str:
 def busca_completa_com_save():
     path = './kangaroo'
     if os.path.exists('save.work'):
-        argumentos = '-gpu -g 80,127 -t 0 -ws -w save.work -wi 60 -o KFound.txt save.work'
+        argumentos = '-gpu -g 80,128 -t 0 -ws -w save.work -wi 60 -o KFound.txt save.work'
     else:
         argumentos = '-gpu -g 80,128 -t 0 -ws -w save.work -wi 60 -o KFound.txt all.txt'
 
