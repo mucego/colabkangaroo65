@@ -7,6 +7,7 @@ import os
 import re
 import hashlib
 import base58
+import argparse
 
 privkey_path = '/content/drive/My Drive/Private Key - Puzzle 130.txt'
 
@@ -33,11 +34,9 @@ def selecionar_range():
         file.write(f"{hex(fim_selecionado)[2:]}\n")
         file.write(f"{public_key}")
 
-def iniciar_busca(teste:bool):
+def iniciar_busca():
     path = './kangaroo'
     argumentos = '-gpu -g 80,128 -t 1 -o KFound.txt 130.txt'
-    if teste == True:
-        argumentos = '-gpu -g 80,128 -t 1 65.txt'
     comando = f"{path} {argumentos}"
     print(comando)
     try: 
@@ -176,12 +175,30 @@ def busca_completa_com_save():
         print(f'Erro: {e}')
 
 def main():
+    parser = argparse.ArgumentParser(
+        description=(
+            "Bot para pesquisar a chave do puzzle 130\n"
+            "Criado por Ataide Freitas\n"
+            "https://github.com/ataidefcjr/colabkangaroo\n"
+            "Doações: bc1qych3lyjyg3cse6tjw7m997ne83fyye4des99a9\n"
+            "Exemplo de uso: !python main.py -m 2 -d bc1qych3lyjyg3cse6tjw7m997ne83fyye4des99a9"
+        ),
+        formatter_class=argparse.RawTextHelpFormatter
+    )
+    parser.add_argument('-d', '--destination', type=str, required=False, help="Informe sua Carteira para transferir automaticamente se encontrada a chave privada.")
+    parser.add_argument('-m', '--mode', type=str, choices=['1','2'], required=False, help="Informe o modo (1 ou 2)")
+    args = parser.parse_args()
+    my_wallet = args.destination
+    selecionar = args.mode
     verifica_saldo()
-    my_wallet = input('Se encontrar a chave o bot tentara realizar a transfernecia para a sua carteira\nCole o endereço da sua carteira: ')
-    selecionar = input('\n-------\n1 - Selecionar um número entre 1 e 50 milhoes.\n2 - Fazer a busca em todo o range da carteira 130 com save automático.\n-------Selecione uma opção: ')
+
+    if not my_wallet:
+        my_wallet = input('Se encontrar a chave o bot tentara realizar a transfernecia para a sua carteira\nCole o endereço da sua carteira: ')
+    if not selecionar:
+        selecionar = input('\n-------\n1 - Selecionar um número entre 1 e 50 milhoes.\n2 - Fazer a busca em todo o range da carteira 130 com save automático.\n-------Selecione uma opção: ')
     if selecionar == '1':
         selecionar_range()
-        iniciar_busca(teste=False)
+        iniciar_busca()
     elif selecionar == '2':
         busca_completa_com_save()
     else:
@@ -190,8 +207,4 @@ def main():
     transferir(wif, my_wallet)
 
 if __name__ == '__main__':
-    if input('Fazer teste na carteira 65? (s/n): ') in ['sim', 's', 'yes', 'y']:
-        iniciar_busca(teste=True)
-        aguarda_quebra()
-    else:
         main()
