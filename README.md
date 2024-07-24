@@ -32,12 +32,18 @@ Ao iniciar o bot vai ser solicitado 2 informações, sua carteira e o modo.
 
 **Selecione o modo**
 * **Modo 1**: O range total é dividido em 50 milhões, voce escolhe um numero entre 1 e 50 milhões, ou 0 para um número aleatório, e a busca será feita nesse range. `(Você pode usar _ para ficar mais fácil de visualizar, por exemplo 32_541_305.)`
-* **Modo 2**: O range total é informado para o Kangaroo, e será gerado arquivos work com salvamento do progresso, esse modo é indicado se deseja fazer multiplas contas google e unir os works, para isso leia o readme do repositorio do Kangaroo.
+* **Modo 2**: O range total é divido em `16` para obtermos um intervalo de 125 bits, pois é o maximo suportado, informado para o Kangaroo, e será gerado arquivos work com salvamento do progresso, esse modo é indicado se deseja fazer multiplas contas google e unir os works, para isso leia o readme do repositorio do Kangaroo.
+* Ao selecionar o modo 2 é necessário selecionar a parte entre 1 e 16 do range. 
 
 
 Voce tambem pode passar o modo e o endereço da sua carteira via argumento. 
 
-Por exemplo `!python main.py -m 2 -d bc1qych3lyjyg3cse6tjw7m997ne83fyye4des99a9`
+Por exemplo `!python main.py -m 2 -p 6 -d bc1qych3lyjyg3cse6tjw7m997ne83fyye4des99a9`
+```
+-m [É o modo a ser utilizado, podendo ser 1 ou 2.]
+-p [É a parte entre 1 e 16, obrigatória para ser utilizado o modo 2.]
+-d [É o endereço da sua carteira, para tentativa de transferencia imediatamente se a chave privada for encontrada]
+```
    
 
 ## Observações Importantes
@@ -57,4 +63,4 @@ with open(makefile_path, 'w') as file:
 ```
 ## Doações 
 
-Agora se voce conseguir encontrar usando esse bot, o papai aceita um café: `bc1qych3lyjyg3cse6tjw7m997ne83fyye4des99a9`
+Se voce conseguir encontrar usando esse bot, o papai aceita um café: `bc1qych3lyjyg3cse6tjw7m997ne83fyye4des99a9`

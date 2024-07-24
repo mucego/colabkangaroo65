@@ -2,7 +2,6 @@ import random
 import subprocess
 from bit import PrivateKey, network
 import time
-import sys
 import os
 import re
 import hashlib
@@ -10,15 +9,11 @@ import base58
 import argparse
 import shutil
 
-save_path = '/content/drive/MyDrive/save.work'
-drive_is_mounted = os.path.exists('/content/drive/MyDrive/')
-contador = 0
-
 def selecionar_range():
     public_key = '03633cbe3ec02b9401c5effa144c5b4d22f87940259634858fc7e59b1c09937852'
     start = int('200000000000000000000000000000000', 16)
     end = int('3ffffffffffffffffffffffffffffffff', 16)
-    partes = 50000000
+    partes = 5_000_0000
     parte = int(input(f'\nDica: Você pode usar "_" para melhor visualização. Por exemplo: 11_111_111.\nDigite uma parte a ser procurada entre 1 e {partes}, ou 0 para uma parte aleatória: '))
     if parte == 0:
         parte = random.randint(1,partes)
@@ -49,39 +44,37 @@ def iniciar_busca():
         print(f'Erro: {e}')
 
 def transferir(wif, destino):
+    if destino == '':
+        print('\nEndereço não informado.\nNão será feito transferência.')
+        return None
+    if len(destino) <= 25: 
+        print (f'Carteira informada {destino} está inválida, interrompendo transação.\n------\n------\n------\nWIF: {wif}')
+        return None
     try: 
-        my_key = PrivateKey(wif)
-        print('---------------------------------------------------\nEndereço da Carteira Capturada: ', my_key.address, '\n---------------------------------------------------')
-        saldo = my_key.balance_as('satoshi')
-        print('---------------------------------------------------\nSaldo da Carteira Capturada: ', saldo, 'satoshis', '\n---------------------------------------------------')
-        if destino == 'Não Informado':
-            print('\nTransferencia não informada, endereço não informado.\n')
-            return None
-        taxa = network.get_fee('fast') 
-    except Exception as e:
-        print(f'Erro ao verificar a carteira: {e}')
-    print(f'Taxa de Transação Sugerida (satoshis por byte): {taxa}')
-    taxa *= 2
-    taxa = int(taxa) * 250
-    print(f'---------- >> --------- >> Taxa a ser utilizada: ', taxa)
-    valor = int(saldo)-taxa
-    valor = int(valor)
-    if valor < 0:
-        print(f'\n-----------------\nSaldo nao possibilita transação: {saldo} satoshis\n ------------------')
-        return None
-    print(f'Valor a ser transferido: {valor} satoshis')
-    print ('Iniciando a transferencia...')
-    try:
-        tx_hash = my_key.send([(destino, valor, "satoshi")], fee=taxa)
-        if tx_hash:
-            print('\n\nTransação Enviada com Sucesso !!!! ---- \n--- Hash da transação: ',tx_hash, '\n---')
-            return tx_hash
+        key = PrivateKey(wif)
+        saldo = key.get_balance('satoshi')
+        print(f'Seu saldo é: {saldo} satoshis')
+
+        num_inputs = len(key.get_unspents())
+        num_outputs = 1
+
+        tamanho_estimado = (num_inputs*148) + (num_outputs*34) + 10
+
+        fee_por_byte = network.get_fee(fast=True)
+        fee = tamanho_estimado * fee_por_byte
+        valor_a_enviar = int(saldo) - fee
+
+        if valor_a_enviar <= 0:
+            print ("Saldo Insuficiente para cobrir a taxa.")
         else:
-            print('\n---------------Falha ao transferir, tente manualmente.---------------')
-            return None
-    except Exception as e:
-        print(f'\n---------------Falha ao transferir, tente manualmente.---------------\n {e}')
-        return None
+            try:
+                transacao = key.send([(destino, valor_a_enviar, 'satoshi')], absolute_fee=True, fee=fee)
+                if transacao:
+                    print (f'Enviado com sucesso: {transacao}\nValor: {valor_a_enviar}')
+            except Exception as e:
+                print (f'Ocorreu um erro: {e}')
+    except:
+        print (f'Ocorreu um erro: {e}')
 
 def verifica_saldo():
     endereco = '1Fo65aKq8s8iquMt6weF1rku1moWVEd5Ua'
@@ -103,23 +96,25 @@ def verifica_saldo():
         print(f"Houve um erro ao verificar o saldo: {e}")
 
 def work_restore():
-    # Se existir work salvo, copia para a pasta do colabkangaroo
-    if os.path.exists(save_path):
-        shutil.copy(save_path, 'save.work')
-        print("Work Save Recuperado.")
+    save_path = f'/content/drive/MyDrive/save{parte}.work'
+    if os.path.exists(save_path): # Verifica se ja existe um save
+        shutil.copy(save_path, f'save{parte}.work') #Copia pro Kangaroo
+        print(f"Work Save {parte} Recuperado.")
     else:
-        print("Work Save Não Localizado.")
+        print(f"Work Save {parte} Não Localizado.")
 
 def work_save():
+    save_path = f'/content/drive/MyDrive/save{parte}.work'
     global contador
     contador +=1
+    save_local = f'save{parte}.work'
     try: 
         if contador == 5:
-        #Se existir work e existir o save_path, copia pro drive a cada (contador) minutos
-            if os.path.exists('save.work'):
+        #Se existir work e existir o save_path, copia pro drive a cada x minutos
+            if os.path.exists(save_local):
                 if drive_is_mounted:
-                    shutil.copy('save.work', save_path)
-                    print("Work Salvo no Drive")
+                    shutil.copy(save_local, save_path)
+                    print(f"Work {parte} Salvo no Drive")
                 else:
                     print("Não foi possível salvar o work no seu drive, verifique se está montado corretamente.")
                 contador = 0
@@ -129,7 +124,7 @@ def work_save():
 def aguarda_quebra(): #Apos chamar o quebrar chave, fica procurando a key no arquivo KFound.txt na raiz a cada minuto
     kfound = 'KFound.txt'
     print('---------------------------------------------')
-    time.sleep(80)
+    time.sleep(70)
     contador = 0
     while True:
         if os.path.exists(kfound):
@@ -141,6 +136,9 @@ def aguarda_quebra(): #Apos chamar o quebrar chave, fica procurando a key no arq
                         privkey = match.group(1)
                         wif = converter_wif(privkey)
                         print (f"CHAVE WIF = {wif}")
+                        if drive_is_mounted:
+                            with open ('/content/drive/MyDrive/WIF.TXT', 'w') as file:
+                                file.write(f'WIF ENCONTRADA: {wif}\nCHAVE PRIVADA: {privkey}')
                         return wif
                     except Exception as e:
                         print (f'Erro ao retornar a chave: {e}')
@@ -181,16 +179,17 @@ def converter_wif(private_key_hex: str) -> str:
         print('Ocorreu um erro ao converter a chave privada para WIF: {e}')
 
 def busca_completa_com_save():
+    work_restore()
     path = './kangaroo'
-    if os.path.exists('save.work'):
-        argumentos = '-gpu -g 80,128 -t 0 -ws -w save.work -wi 60 -o KFound.txt -i save.work'
+    if os.path.exists(f'save{parte}.work'):
+        argumentos = f'-gpu -g 80,128 -t 0 -ws -w save.work -wi 60 -o KFound.txt -i save{parte}.work'
     else:
-        argumentos = '-gpu -g 80,128 -t 0 -ws -w save.work -wi 60 -o KFound.txt all.txt'
+        argumentos = f'-gpu -g 80,128 -t 0 -ws -w save.work -wi 60 -o KFound.txt ranges/130-{parte}.txt'
 
     comando = f"{path} {argumentos}"
     print(comando)
     try: 
-        print("Iniciando busca")
+        print(f"Iniciando busca na parte {parte}/16")
         subprocess.Popen(comando, shell=True)
     except Exception as e:
         print(f'Erro: {e}')
@@ -206,9 +205,15 @@ def main():
         ),
         formatter_class=argparse.RawTextHelpFormatter
     )   
+    partes = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16']
     parser.add_argument('-d', '--destination', type=str, required=False, help="Informe sua Carteira para transferir automaticamente se encontrada a chave privada.")
-    parser.add_argument('-m', '--mode', type=str, choices=['1','2'], required=False, help="Informe o modo (1 ou 2)")
+    parser.add_argument('-m', '--mode', type=str, choices=['1', '2'], required=False, help="Informe o modo (1 ou 2)")
+    parser.add_argument('-p', '--parte', type=str, choices=partes, required=False, help="Selecione uma parte entre 1 e 16. (Obrigatório ao usar o modo 2)")
+
     args = parser.parse_args()
+
+    global parte
+    parte = args.parte
     my_wallet = args.destination
     selecionar = args.mode
     verifica_saldo()
@@ -221,12 +226,21 @@ def main():
         selecionar_range()
         iniciar_busca()
     elif selecionar == '2':
-        work_restore()
+        if not parte:
+            parte = input('Insira um numero de 1 a 16: ')
+        if parte not in partes:
+            print('Parte inválida, encerrando.')
+            quit()
         busca_completa_com_save()
     else:
-        print('Opção Inválida, encerrando.')
+        print('Modo Inválido, encerrando.')
+        quit()
     wif = aguarda_quebra()
     transferir(wif, my_wallet)
 
 if __name__ == '__main__':
-        main()
+    drive_path = '/content/drive/MyDrive/'
+    drive_is_mounted = os.path.exists(drive_path)
+    parte = None
+    contador = 0
+    main()
