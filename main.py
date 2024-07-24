@@ -98,7 +98,7 @@ def verifica_saldo():
 def work_restore():
     save_path = f'/content/drive/MyDrive/save{parte}.work'
     if os.path.exists(save_path): # Verifica se ja existe um save
-        shutil.copy(save_path, f'save{parte}.work') #Copia pro Kangaroo
+        shutil.copy(save_path, 'save.work') #Copia pro Kangaroo
         print(f"Work Save {parte} Recuperado.")
     else:
         print(f"Work Save {parte} Não Localizado.")
@@ -107,7 +107,7 @@ def work_save():
     save_path = f'/content/drive/MyDrive/save{parte}.work'
     global contador
     contador +=1
-    save_local = f'save{parte}.work'
+    save_local = 'save.work'
     try: 
         if contador == 5:
         #Se existir work e existir o save_path, copia pro drive a cada x minutos
@@ -125,7 +125,6 @@ def aguarda_quebra(): #Apos chamar o quebrar chave, fica procurando a key no arq
     kfound = 'KFound.txt'
     print('---------------------------------------------')
     time.sleep(70)
-    contador = 0
     while True:
         if os.path.exists(kfound):
             with open(kfound, "r") as file:
@@ -142,10 +141,9 @@ def aguarda_quebra(): #Apos chamar o quebrar chave, fica procurando a key no arq
                         return wif
                     except Exception as e:
                         print (f'Erro ao retornar a chave: {e}')
-
-        time.sleep(60)
-        contador += 60
         work_save()
+        time.sleep(60)
+
     
 def converter_wif(private_key_hex: str) -> str:
     try: 
@@ -181,8 +179,8 @@ def converter_wif(private_key_hex: str) -> str:
 def busca_completa_com_save():
     work_restore()
     path = './kangaroo'
-    if os.path.exists(f'save{parte}.work'):
-        argumentos = f'-gpu -g 80,128 -t 0 -ws -w save.work -wi 60 -o KFound.txt -i save{parte}.work'
+    if os.path.exists('save.work'):
+        argumentos = '-gpu -g 80,128 -t 0 -ws -w save.work -wi 60 -o KFound.txt -i save.work'
     else:
         argumentos = f'-gpu -g 80,128 -t 0 -ws -w save.work -wi 60 -o KFound.txt ranges/130-{parte}.txt'
 
@@ -231,6 +229,7 @@ def main():
         if parte not in partes:
             print('Parte inválida, encerrando.')
             quit()
+        print(f'Parte selecionada: {parte}')
         busca_completa_com_save()
     else:
         print('Modo Inválido, encerrando.')
