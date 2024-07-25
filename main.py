@@ -34,7 +34,7 @@ def selecionar_range():
 
 def iniciar_busca():
     path = './kangaroo'
-    argumentos = '-gpu -g 80,128 -t 1 -o KFound.txt 130.txt'
+    argumentos = '-gpu -g 80,128 -t 4 -o KFound.txt 130.txt'
     comando = f"{path} {argumentos}"
     print(comando)
     try: 
@@ -144,7 +144,6 @@ def aguarda_quebra(): #Apos chamar o quebrar chave, fica procurando a key no arq
         work_save()
         time.sleep(60)
 
-    
 def converter_wif(private_key_hex: str) -> str:
     try: 
         private_key_hex.lower()
@@ -180,9 +179,9 @@ def busca_completa_com_save():
     work_restore()
     path = './kangaroo'
     if os.path.exists('save.work'):
-        argumentos = '-gpu -g 80,128 -t 0 -ws -w save.work -wi 60 -o KFound.txt -i save.work'
+        argumentos = '-gpu -g 80,128 -t 4 -ws -w save.work -wi 60 -o KFound.txt -i save.work'
     else:
-        argumentos = f'-gpu -g 80,128 -t 0 -ws -w save.work -wi 60 -o KFound.txt ranges/130-{parte}.txt'
+        argumentos = f'-gpu -g 80,128 -t 4 -ws -w save.work -wi 60 -o KFound.txt ranges/130-{parte}.txt'
 
     comando = f"{path} {argumentos}"
     print(comando)
