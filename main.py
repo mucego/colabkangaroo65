@@ -181,7 +181,7 @@ def busca_completa_com_save():
     if os.path.exists('save.work'):
         argumentos = '-gpu -g 128,128 -t 6 -ws -w save.work -wi 60 -o KFound.txt -i save.work'
     else:
-        argumentos = f'-gpu -g 128,128 -t 6 -ws -w save.work -wi 60 -o KFound.txt ranges/65.txt'
+        argumentos = f'-gpu -g 128,128 -t 6 -ws -w save.work -wi 60 -o KFound.txt ranges/65-{parte}.txt'
 
     comando = f"{path} {argumentos}"
     print(comando)
