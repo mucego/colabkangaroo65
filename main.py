@@ -11,8 +11,8 @@ import shutil
 
 def selecionar_range():
     public_key = '0230210c23b1a047bc9bdbb13448e67deddc108946de6de639bcc75d47c0216b1b'
-    start = int('10000000000000000', 16)
-    end = int('1ffffffffffffffff', 16)
+    start = int('1a838b13505b20000', 16)
+    end = int('1a838b13505b2ffff', 16)
     partes = 5_000_0000
     parte = int(input(f'\nDica: Você pode usar "_" para melhor visualização. Por exemplo: 11_111_111.\nDigite uma parte a ser procurada entre 1 e {partes}, ou 0 para uma parte aleatória: '))
     if parte == 0:
@@ -34,7 +34,7 @@ def selecionar_range():
 
 def iniciar_busca():
     path = './kangaroo'
-    argumentos = '-gpu -g 256,256 -t 4 -o KFound.txt 65.txt'
+    argumentos = '-gpu -g 128,128 -t 6 -o KFound.txt 65.txt'
     comando = f"{path} {argumentos}"
     print(comando)
     try: 
@@ -179,9 +179,9 @@ def busca_completa_com_save():
     work_restore()
     path = './kangaroo'
     if os.path.exists('save.work'):
-        argumentos = '-gpu -g 256,256 -t 4 -ws -w save.work -wi 60 -o KFound.txt -i save.work'
+        argumentos = '-gpu -g 128,128 -t 6 -ws -w save.work -wi 60 -o KFound.txt -i save.work'
     else:
-        argumentos = f'-gpu -g 256,256 -t 4 -ws -w save.work -wi 60 -o KFound.txt ranges/65-{parte}.txt'
+        argumentos = f'-gpu -g 128,128 -t 6 -ws -w save.work -wi 60 -o KFound.txt ranges/65-{parte}.txt'
 
     comando = f"{path} {argumentos}"
     print(comando)
